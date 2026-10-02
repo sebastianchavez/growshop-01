@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VerdeVital Grow Shop · Cultivá con confianza</title>
+  <meta name="description" content="Grow shop chileno especializado en cultivo indoor, hidroponía, iluminación LED, carpas, fertilizantes y asesoría personalizada. Despacho a todo Chile.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2315803d'/%3E%3Cpath d='M32 16c-4 6-8 10-8 18 0 4 4 8 8 8s8-4 8-8c0-8-4-12-8-18z' fill='white'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            serif: ['Playfair Display', 'Georgia', 'serif']
+          },
+          colors: {
+            vv: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              300: '#86efac',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#14532d',
+              900: '#052e16',
+              cream: '#f5f1e8',
+              earth: '#e8e0cf'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="font-sans bg-white text-slate-800 antialiased">
+
+  <div id="navbar"></div>
+
+  <main>
+    <!-- HERO -->
+    <section class="relative overflow-hidden bg-gradient-to-br from-vv-800 via-vv-700 to-vv-600 text-white">
+      <div class="absolute inset-0 opacity-30" style="background-image: url('https://picsum.photos/seed/verdevital-hero/1920/800'); background-size: cover; background-position: center;"></div>
+      <div class="absolute inset-0 bg-gradient-to-br from-vv-800/85 to-vv-600/60"></div>
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
+        <div class="max-w-3xl">
+          <span class="inline-flex items-center gap-2 bg-white/15 backdrop-blur px-4 py-1.5 rounded-full text-sm font-medium mb-6 border border-white/20">
+            🌱 Grow Shop · Despacho a todo Chile
+          </span>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold leading-tight mb-6">
+            Cultivá tu propio <em class="italic text-vv-300">bienestar</em>
+          </h1>
+          <p class="text-lg text-vv-50 mb-8 max-w-2xl">
+            Todo lo que necesitás para tu cultivo indoor: iluminación LED, carpas, hidroponía, fertilizantes y <strong>asesoría personalizada</strong> de cultivadores con 12 años de experiencia.
+          </p>
+          <div class="flex flex-wrap gap-3">
+            <a href="productos.html" class="inline-flex items-center gap-2 bg-white text-vv-800 px-7 py-3.5 rounded-xl font-semibold hover:bg-vv-cream transition shadow-lg">
+              <span class="material-symbols-outlined">shopping_bag</span>
+              Ver catálogo
+            </a>
+            <a href="https://wa.me/56976543210" target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-white/10 backdrop-blur border border-white/30 px-7 py-3.5 rounded-xl font-semibold hover:bg-white/20 transition">
+              <span class="material-symbols-outlined">chat</span>
+              Asesoría gratis
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CATEGORÍAS -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div class="text-center mb-12">
+        <div class="w-16 h-1 bg-vv-700 mx-auto mb-4 rounded"></div>
+        <h2 class="text-3xl sm:text-4xl font-serif font-bold mb-3">Explorá por categoría</h2>
+        <p class="text-slate-600 max-w-2xl mx-auto">Equipos profesionales para cada etapa de tu cultivo. Trabajamos sólo con marcas reconocidas del rubro.</p>
+      </div>
+      <div id="categories-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+    </section>
+
+    <!-- PRODUCTOS DESTACADOS -->
+    <section class="bg-vv-cream/50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="flex flex-wrap items-end justify-between gap-4 mb-10">
+          <div>
+            <div class="w-16 h-1 bg-vv-700 mb-4 rounded"></div>
+            <h2 class="text-3xl sm:text-4xl font-serif font-bold mb-2">Productos destacados</h2>
+            <p class="text-slate-600">Lo más vendido y mejor valorado por nuestros cultivadores</p>
+          </div>
+          <a href="productos.html" class="inline-flex items-center gap-1 text-vv-700 font-semibold hover:text-vv-800">
+            Ver todos <span class="material-symbols-outlined">arrow_forward</span>
+          </a>
+        </div>
+        <div id="featured-products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+      </div>
+    </section>
+
+    <!-- BENEFICIOS -->
+    <section class="bg-vv-800 text-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+          <div>
+            <div class="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-4 text-vv-300">
+              <span class="material-symbols-outlined text-3xl">local_shipping</span>
+            </div>
+            <h3 class="font-serif text-xl font-bold mb-2">Envío a todo Chile</h3>
+            <p class="text-vv-100 text-sm">Despacho 24-48h a todo el país. <strong>Gratis sobre $50.000</strong> en RM. Packaging discreto.</p>
+          </div>
+          <div>
+            <div class="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-4 text-vv-300">
+              <span class="material-symbols-outlined text-3xl">support_agent</span>
+            </div>
+            <h3 class="font-serif text-xl font-bold mb-2">Asesoría personalizada</h3>
+            <p class="text-vv-100 text-sm">Cultivadores con 12 años de experiencia te ayudan a armar tu setup ideal. WhatsApp y tienda.</p>
+          </div>
+          <div>
+            <div class="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-4 text-vv-300">
+              <span class="material-symbols-outlined text-3xl">verified</span>
+            </div>
+            <h3 class="font-serif text-xl font-bold mb-2">Garantía real</h3>
+            <p class="text-vv-100 text-sm">Todos los productos con garantía legal. <strong>LEDs con 3 años</strong> del fabricante. Cambios sin costo.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIOS -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div class="text-center mb-12">
+        <div class="w-16 h-1 bg-vv-700 mx-auto mb-4 rounded"></div>
+        <h2 class="text-3xl sm:text-4xl font-serif font-bold mb-3">Lo que dicen nuestros cultivadores</h2>
+        <p class="text-slate-600">Cosechas reales de clientes reales</p>
+      </div>
+      <div id="testimonials-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      <div class="bg-vv-cream rounded-3xl p-8 lg:p-12 text-center border border-vv-earth">
+        <span class="material-symbols-outlined text-5xl text-vv-700">workspace_premium</span>
+        <h2 class="font-serif text-2xl sm:text-3xl font-bold mt-3 mb-3">¿Primera vez cultivando?</h2>
+        <p class="text-slate-700 mb-6 max-w-2xl mx-auto">Te asesoramos <strong>gratis</strong> en tu primera compra. Te ayudamos a elegir iluminación, carpa y nutrientes según tu espacio, presupuesto y experiencia.</p>
+        <div class="flex flex-wrap justify-center gap-3">
+          <a href="https://wa.me/56976543210" target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-vv-700 text-white px-6 py-3 rounded-xl font-semibold hover:bg-vv-800">
+            <span class="material-symbols-outlined">chat</span> Hablar por WhatsApp
+          </a>
+          <a href="contacto.html" class="inline-flex items-center gap-2 bg-white border border-vv-700 text-vv-700 px-6 py-3 rounded-xl font-semibold hover:bg-vv-cream">
+            <span class="material-symbols-outlined">mail</span> Escribir por email
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/pages/home.js"></script>
+  <script>
+    VV.mountNavbar('inicio');
+    VV.mountFooter();
+    VVHome.init();
+  </script>
+</body>
+</html>

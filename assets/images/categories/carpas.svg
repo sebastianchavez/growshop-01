@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#14532d"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.3" cy="0.3" r="0.7">
+      <stop offset="0%" stop-color="white" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#g)"/>
+  <rect width="400" height="400" fill="url(#glow)"/>
+  <g fill="white" fill-opacity="0.95" transform="translate(200 195)">
+    <path d="M-90 -60 L90 -60 L0 -150 Z" fill="white" fill-opacity="0.95"/>
+    <rect x="-80" y="-60" width="160" height="110" fill="white" fill-opacity="0.85" rx="4"/>
+    <rect x="-25" y="-15" width="50" height="65" fill="url(#g)" rx="2"/>
+    <rect x="-95" y="-65" width="8" height="115" fill="white" fill-opacity="0.5"/>
+    <rect x="87" y="-65" width="8" height="115" fill="white" fill-opacity="0.5"/>
+  </g>
+  <rect x="0" y="320" width="400" height="80" fill="black" fill-opacity="0.4"/>
+  <text x="20" y="358" fill="white" font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="800">Carpas de Cultivo</text>
+  <text x="20" y="384" fill="white" fill-opacity="0.75" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="500">Indoor grow tents profesionales</text>
+</svg>

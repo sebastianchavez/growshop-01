@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0c4a6e"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.3" cy="0.3" r="0.7">
+      <stop offset="0%" stop-color="white" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#g)"/>
+  <rect width="400" height="400" fill="url(#glow)"/>
+  <g fill="white" fill-opacity="0.95" transform="translate(200 180)">
+    <path d="M0 -80 C -35 -30 -50 10 -50 40 A 50 50 0 0 0 50 40 C 50 10 35 -30 0 -80 Z" fill="white" fill-opacity="0.95"/>
+    <ellipse cx="-15" cy="20" rx="10" ry="15" fill="#0c4a6e" fill-opacity="0.3"/>
+  </g>
+  <g transform="translate(120 100)">
+    <circle cx="0" cy="0" r="4" fill="white" fill-opacity="0.5"/>
+  </g>
+  <g transform="translate(290 120)">
+    <circle cx="0" cy="0" r="3" fill="white" fill-opacity="0.5"/>
+  </g>
+  <g transform="translate(80 250)">
+    <circle cx="0" cy="0" r="3" fill="white" fill-opacity="0.5"/>
+  </g>
+  <g transform="translate(320 260)">
+    <circle cx="0" cy="0" r="4" fill="white" fill-opacity="0.5"/>
+  </g>
+  <rect x="0" y="320" width="400" height="80" fill="black" fill-opacity="0.4"/>
+  <text x="20" y="358" fill="white" font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="800">Hidroponía</text>
+  <text x="20" y="384" fill="white" fill-opacity="0.75" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="500">DWC · NFT · Riego por goteo</text>
+</svg>

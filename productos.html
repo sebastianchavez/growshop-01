@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Catálogo · VerdeVital Grow Shop</title>
+  <meta name="description" content="Catálogo completo de productos para cultivo indoor: iluminación LED, carpas, fertilizantes, hidroponía, clima y más. Despacho a todo Chile.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2315803d'/%3E%3Cpath d='M32 16c-4 6-8 10-8 18 0 4 4 8 8 8s8-4 8-8c0-8-4-12-8-18z' fill='white'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], serif: ['Playfair Display', 'Georgia', 'serif'] },
+          colors: { vv: { 50:'#f0fdf4',100:'#dcfce7',200:'#bbf7d0',300:'#86efac',400:'#4ade80',500:'#22c55e',600:'#16a34a',700:'#15803d',800:'#14532d',900:'#052e16',cream:'#f5f1e8',earth:'#e8e0cf' } }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="font-sans bg-white text-slate-800 antialiased">
+
+  <div id="navbar"></div>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- HEADER -->
+    <div class="mb-6">
+      <h1 class="text-3xl sm:text-4xl font-serif font-bold mb-1">Catálogo</h1>
+      <p class="text-slate-600">Equipos y productos profesionales para tu cultivo</p>
+    </div>
+
+    <div class="grid lg:grid-cols-[280px_1fr] gap-8">
+      <!-- SIDEBAR FILTROS -->
+      <aside class="space-y-4">
+        <div class="bg-white border border-slate-200 rounded-2xl p-5">
+          <h3 class="font-semibold text-sm uppercase tracking-wider mb-3">Buscar</h3>
+          <div class="relative">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+            <input id="search-input" type="search" placeholder="Buscar productos..." class="w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-vv-700 focus:ring-2 focus:ring-vv-100">
+          </div>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl p-5">
+          <h3 class="font-semibold text-sm uppercase tracking-wider mb-3">Categorías</h3>
+          <div id="filters-categories" class="space-y-0.5"></div>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl p-5">
+          <h3 class="font-semibold text-sm uppercase tracking-wider mb-3">Precio</h3>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-xs text-slate-500">Mínimo</label>
+              <input id="price-min" type="number" min="0" placeholder="0" class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-vv-700">
+            </div>
+            <div>
+              <label class="text-xs text-slate-500">Máximo</label>
+              <input id="price-max" type="number" min="0" placeholder="∞" class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-vv-700">
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- RESULTADOS -->
+      <div>
+        <div class="flex items-center justify-between mb-5 pb-4 border-b border-slate-200">
+          <p class="text-sm text-slate-600"><span id="results-count" class="font-bold text-slate-900">0</span> productos</p>
+          <div class="flex items-center gap-2">
+            <label class="text-sm text-slate-600">Ordenar:</label>
+            <select id="sort-select" class="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:border-vv-700">
+              <option value="destacados">Destacados</option>
+              <option value="precio-asc">Menor precio</option>
+              <option value="precio-desc">Mayor precio</option>
+              <option value="rating">Mejor valorados</option>
+              <option value="nombre">A-Z</option>
+            </select>
+          </div>
+        </div>
+        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/pages/products.js"></script>
+  <script>
+    VV.mountNavbar('productos');
+    VV.mountFooter();
+    VVProducts.init();
+  </script>
+</body>
+</html>

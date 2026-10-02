@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Detalle pedido · VerdeVital</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2315803d'/%3E%3Cpath d='M32 16c-4 6-8 10-8 18 0 4 4 8 8 8s8-4 8-8c0-8-4-12-8-18z' fill='white'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], serif: ['Playfair Display', 'Georgia', 'serif'] },
+          colors: { vv: { 50:'#f0fdf4',100:'#dcfce7',200:'#bbf7d0',300:'#86efac',400:'#4ade80',500:'#22c55e',600:'#16a34a',700:'#15803d',800:'#14532d',900:'#052e16',cream:'#f5f1e8',earth:'#e8e0cf' } }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="font-sans bg-white text-slate-800 antialiased">
+
+  <div id="navbar"></div>
+
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <a href="perfil.html#pedidos" class="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-vv-700 mb-6">
+      <span class="material-symbols-outlined text-base">arrow_back</span> Volver a mis pedidos
+    </a>
+    <div id="order-detail-root"></div>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script>
+    VV.mountNavbar('');
+    VV.mountFooter();
+    if (!VV.requireAuth('login.html?return=pedido-detalle.html')) throw new Error('no auth');
+
+    const id = VV.getQueryParam('id');
+    const order = id ? Store.orders.byId(id) : null;
+    const user = Store.auth.current();
+
+    if (!order || order.userId !== user.id) {
+      document.getElementById('order-detail-root').innerHTML = `
+        <div class="text-center py-16">
+          <span class="material-symbols-outlined text-6xl text-slate-300">help</span>
+          <h2 class="mt-3 text-xl font-bold">Pedido no encontrado</h2>
+          <a href="perfil.html#pedidos" class="mt-4 inline-flex bg-vv-700 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-vv-800">Ver mis pedidos</a>
+        </div>
+      `;
+    } else {
+      const statusColors = {
+        recibido: 'bg-blue-100 text-blue-700',
+        preparando: 'bg-amber-100 text-amber-700',
+        enviado: 'bg-purple-100 text-purple-700',
+        entregado: 'bg-vv-100 text-vv-800',
+        cancelado: 'bg-red-100 text-red-700'
+      };
+      const currentIdx = Store.orders.statusIndex(order.status);
+      const flow = Store.orders.statusFlow();
+
+      const timelineHTML = flow.map((st, i) => {
+        const isDone = i <= currentIdx;
+        const isActive = i === currentIdx;
+        const historyItem = order.history.find(h => h.status === st);
+        const date = historyItem ? new Date(historyItem.date).toLocaleDateString('es-CL', { day: 'numeric', month: 'short' }) : '';
+        return `
+          <div class="flex items-start gap-3 ${i !== flow.length - 1 ? 'pb-6 border-l-2 ' + (isDone ? 'border-vv-700' : 'border-slate-200') + ' ml-4' : 'ml-4'}">
+            <div class="w-9 h-9 rounded-full ${isDone ? 'bg-vv-700 text-white' : 'bg-slate-200 text-slate-500'} flex items-center justify-center -ml-[19px] shrink-0 ${isActive ? 'ring-4 ring-vv-200' : ''}">
+              <span class="material-symbols-outlined text-lg">${Store.orders.statusIcon(st)}</span>
+            </div>
+            <div class="${i === flow.length - 1 ? '' : '-mt-1'}">
+              <p class="font-semibold text-sm ${isDone ? 'text-slate-900' : 'text-slate-400'}">${Store.orders.statusLabel(st)}</p>
+              ${date ? `<p class="text-xs text-slate-500">${date}</p>` : (i > currentIdx ? '<p class="text-xs text-slate-400">Pendiente</p>' : '')}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const reviewableItems = order.status === 'entregado' ? order.items : [];
+
+      document.getElementById('order-detail-root').innerHTML = `
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+          <div>
+            <h1 class="text-2xl font-serif font-bold">Pedido ${order.id}</h1>
+            <p class="text-sm text-slate-600">${new Date(order.createdAt).toLocaleDateString('es-CL', { dateStyle: 'long', timeStyle: 'short' })}</p>
+          </div>
+          <span class="px-4 py-1.5 rounded-full text-sm font-semibold ${statusColors[order.status]}">${Store.orders.statusLabel(order.status)}</span>
+        </div>
+
+        <div class="grid lg:grid-cols-[1.5fr_1fr] gap-8">
+          <div class="space-y-6">
+            <div class="bg-white border border-slate-200 rounded-2xl p-6">
+              <h2 class="font-bold mb-4">Productos</h2>
+              <div class="divide-y divide-slate-100">
+                ${order.items.map(i => `
+                  <div class="py-3 flex items-center gap-4">
+                    <a href="producto.html?id=${i.id}"><img src="${i.image}" class="w-16 h-16 rounded-lg object-cover bg-vv-cream" onerror="this.onerror=null;this.src='assets/images/categories/${i.category || 'iluminacion'}.svg'"></a>
+                    <div class="flex-1 min-w-0">
+                      <a href="producto.html?id=${i.id}" class="font-semibold hover:text-vv-700 line-clamp-1">${VV.escapeHTML(i.name)}</a>
+                      <p class="text-sm text-slate-500">${i.qty} × ${VV.formatCLP(i.price)}</p>
+                    </div>
+                    <div class="text-right">
+                      <p class="font-bold">${VV.formatCLP(i.price * i.qty)}</p>
+                      ${order.status === 'entregado' ? `<a href="resena.html?productId=${i.id}" class="text-xs text-vv-700 hover:text-vv-800 font-semibold inline-flex items-center gap-1 mt-1"><span class="material-symbols-outlined text-sm">star</span> Reseñar</a>` : ''}
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-2xl p-6">
+              <h2 class="font-bold mb-1">Estado del envío</h2>
+              <p class="text-sm text-slate-600 mb-5">Actualizado ${order.history[order.history.length - 1] ? new Date(order.history[order.history.length - 1].date).toLocaleDateString('es-CL', { dateStyle: 'long' }) : ''}</p>
+              <div>${timelineHTML}</div>
+            </div>
+          </div>
+
+          <aside class="space-y-4">
+            <div class="bg-vv-cream rounded-2xl p-6">
+              <h3 class="font-bold mb-3">Resumen</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex justify-between"><span>Subtotal</span><span>${VV.formatCLP(order.subtotal)}</span></div>
+                <div class="flex justify-between"><span>Envío (${order.shippingName})</span><span>${order.shipping === 0 ? 'Gratis' : VV.formatCLP(order.shipping)}</span></div>
+                <div class="flex justify-between pt-2 border-t border-vv-earth"><span class="font-bold">${VV.formatCLP(order.total)}</span></div>
+              </div>
+            </div>
+            <div class="bg-white border border-slate-200 rounded-2xl p-6">
+              <h3 class="font-bold mb-3">Envío a</h3>
+              <p class="text-sm">${order.address.street}${order.address.apartment ? ', ' + order.address.apartment : ''}</p>
+              <p class="text-sm text-slate-600">${order.address.commune}, ${order.address.region}</p>
+              <p class="text-sm text-slate-600 mt-2">Pago: ${VV.escapeHTML(order.paymentName)}</p>
+            </div>
+            ${order.status === 'entregado' && reviewableItems.length > 0 ? `
+              <div class="bg-vv-50 border border-vv-200 rounded-2xl p-6">
+                <h3 class="font-bold mb-1 flex items-center gap-2"><span class="material-symbols-outlined text-vv-700">reviews</span> ¿Recibiste tu pedido?</h3>
+                <p class="text-sm text-slate-700 mb-3">Tu opinión ayuda a otros cultivadores. ¡Cuéntanos tu experiencia!</p>
+                <a href="resena.html?productId=${reviewableItems[0].id}" class="inline-flex items-center gap-2 bg-vv-700 text-white px-4 py-2 rounded-xl font-semibold hover:bg-vv-800 text-sm">
+                  <span class="material-symbols-outlined">star</span> Dejar reseña
+                </a>
+              </div>
+            ` : ''}
+          </aside>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>

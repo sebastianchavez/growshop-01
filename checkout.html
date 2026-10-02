@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Checkout · VerdeVital</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2315803d'/%3E%3Cpath d='M32 16c-4 6-8 10-8 18 0 4 4 8 8 8s8-4 8-8c0-8-4-12-8-18z' fill='white'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], serif: ['Playfair Display', 'Georgia', 'serif'] },
+          colors: { vv: { 50:'#f0fdf4',100:'#dcfce7',200:'#bbf7d0',300:'#86efac',400:'#4ade80',500:'#22c55e',600:'#16a34a',700:'#15803d',800:'#14532d',900:'#052e16',cream:'#f5f1e8',earth:'#e8e0cf' } }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="font-sans bg-white text-slate-800 antialiased">
+
+  <div id="navbar"></div>
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h1 class="text-3xl sm:text-4xl font-serif font-bold mb-6">Finalizar compra</h1>
+
+    <div class="flex items-center justify-between mb-8 gap-2">
+      <div class="flex items-center gap-2 flex-1">
+        <div id="step1-circle" class="w-9 h-9 rounded-full bg-vv-700 text-white flex items-center justify-center font-bold text-sm shrink-0">1</div>
+        <span class="text-sm font-semibold hidden sm:inline">Dirección</span>
+      </div>
+      <div class="flex-1 h-0.5 bg-slate-200 mx-1"><div id="bar-1" class="h-full bg-vv-700 transition-all" style="width:0%"></div></div>
+      <div class="flex items-center gap-2 flex-1 justify-end">
+        <span class="text-sm font-semibold hidden sm:inline">Envío</span>
+        <div id="step2-circle" class="w-9 h-9 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm shrink-0">2</div>
+      </div>
+      <div class="flex-1 h-0.5 bg-slate-200 mx-1"><div id="bar-2" class="h-full bg-vv-700 transition-all" style="width:0%"></div></div>
+      <div class="flex items-center gap-2 flex-1 justify-end">
+        <span class="text-sm font-semibold hidden sm:inline">Pago</span>
+        <div id="step3-circle" class="w-9 h-9 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-bold text-sm shrink-0">3</div>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-[1.5fr_1fr] gap-8">
+      <div>
+        <!-- STEP 1: DIRECCIÓN -->
+        <div id="step1-panel" class="bg-white border border-slate-200 rounded-2xl p-6 lg:p-8">
+          <h2 class="text-xl font-bold mb-1">1. Dirección de envío</h2>
+          <p class="text-sm text-slate-600 mb-5">¿A dónde enviamos tu pedido?</p>
+          <form id="address-form" class="grid sm:grid-cols-2 gap-4">
+            <div class="sm:col-span-2"><label class="block text-sm font-medium mb-1.5">Calle y número *</label><input required name="street" type="text" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:border-vv-700 focus:ring-2 focus:ring-vv-100"></div>
+            <div><label class="block text-sm font-medium mb-1.5">Depto / Casa (opcional)</label><input name="apartment" type="text" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:border-vv-700 focus:ring-2 focus:ring-vv-100"></div>
+            <div><label class="block text-sm font-medium mb-1.5">Comuna *</label><input required name="commune" type="text" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:border-vv-700 focus:ring-2 focus:ring-vv-100"></div>
+            <div><label class="block text-sm font-medium mb-1.5">Región *</label>
+              <select required name="region" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:border-vv-700 focus:ring-2 focus:ring-vv-100">
+                <option value="">Selecciona...</option>
+                <option>Región Metropolitana</option>
+                <option>Valparaíso</option>
+                <option>Biobío</option>
+                <option>Otras regiones</option>
+              </select>
+            </div>
+            <div><label class="block text-sm font-medium mb-1.5">Código postal</label><input name="zipCode" type="text" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:border-vv-700 focus:ring-2 focus:ring-vv-100"></div>
+            <div class="sm:col-span-2"><label class="block text-sm font-medium mb-1.5">Indicaciones para el repartidor (opcional)</label><textarea name="notes" rows="2" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:border-vv-700 focus:ring-2 focus:ring-vv-100"></textarea></div>
+            <div class="sm:col-span-2 flex justify-end mt-5">
+              <button type="submit" class="inline-flex items-center gap-2 bg-vv-700 text-white px-6 py-3 rounded-xl font-semibold hover:bg-vv-800">Continuar <span class="material-symbols-outlined">arrow_forward</span></button>
+            </div>
+          </form>
+        </div>
+
+        <!-- STEP 2: ENVÍO -->
+        <div id="step2-panel" class="hidden bg-white border border-slate-200 rounded-2xl p-6 lg:p-8 mt-6">
+          <h2 class="text-xl font-bold mb-1">2. Tipo de envío</h2>
+          <p class="text-sm text-slate-600 mb-5">Elige cómo quieres recibir tu pedido</p>
+          <div class="space-y-3" id="shipping-options"></div>
+          <div class="flex justify-between mt-6">
+            <button type="button" id="back-to-1" class="inline-flex items-center gap-2 px-5 py-2.5 border border-slate-300 rounded-xl hover:bg-slate-50">
+              <span class="material-symbols-outlined">arrow_back</span> Volver
+            </button>
+            <button type="button" id="to-step-3" class="inline-flex items-center gap-2 bg-vv-700 text-white px-6 py-3 rounded-xl font-semibold hover:bg-vv-800 disabled:opacity-50" disabled>Continuar <span class="material-symbols-outlined">arrow_forward</span></button>
+          </div>
+        </div>
+
+        <!-- STEP 3: PAGO -->
+        <div id="step3-panel" class="hidden bg-white border border-slate-200 rounded-2xl p-6 lg:p-8 mt-6">
+          <h2 class="text-xl font-bold mb-1">3. Medio de pago</h2>
+          <p class="text-sm text-slate-600 mb-5">Selecciona cómo pagarás tu pedido</p>
+          <div class="space-y-3" id="payment-options"></div>
+          <div class="flex justify-between mt-6">
+            <button type="button" id="back-to-2" class="inline-flex items-center gap-2 px-5 py-2.5 border border-slate-300 rounded-xl hover:bg-slate-50">
+              <span class="material-symbols-outlined">arrow_back</span> Volver
+            </button>
+            <button type="button" id="confirm-order" class="inline-flex items-center gap-2 bg-vv-700 text-white px-6 py-3 rounded-xl font-semibold hover:bg-vv-800 disabled:opacity-50" disabled>
+              <span class="material-symbols-outlined">check_circle</span> Pagar y confirmar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESUMEN -->
+      <aside>
+        <div class="bg-vv-cream rounded-2xl p-6 sticky top-24">
+          <h2 class="font-serif text-xl font-bold mb-4">Tu pedido</h2>
+          <div class="space-y-3 pb-3 border-b border-vv-earth" id="summary-items"></div>
+          <div class="space-y-2 pt-3 text-sm">
+            <div class="flex justify-between"><span>Subtotal</span><span class="font-semibold" id="sum-subtotal">$0</span></div>
+            <div class="flex justify-between"><span>Envío</span><span class="font-semibold" id="sum-shipping">$0</span></div>
+          </div>
+          <div class="flex justify-between items-baseline pt-3 mt-3 border-t border-vv-earth">
+            <span class="font-bold">Total</span>
+            <span class="text-2xl font-bold text-vv-800" id="sum-total">$0</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script>
+    VV.mountNavbar('');
+    VV.mountFooter();
+
+    if (!VV.requireAuth('login.html?return=checkout.html')) {
+      throw new Error('not authed');
+    }
+
+    const FREE_SHIPPING = 50000;
+    const state = {
+      step: 1,
+      address: null,
+      shipping: null,
+      payment: null
+    };
+
+    function calcShipping(subtotal) {
+      return state.shipping && state.shipping.price === 0 ? 0 :
+             (state.shipping ? state.shipping.price : (subtotal >= FREE_SHIPPING ? 0 : 3990));
+    }
+
+    function renderSummary() {
+      const items = Store.cart.getAll();
+      const subtotal = Store.cart.subtotal();
+      const shipping = state.shipping ? state.shipping.price : (subtotal >= FREE_SHIPPING ? 0 : 3990);
+      const total = subtotal + shipping;
+
+      document.getElementById('summary-items').innerHTML = items.map(i => `
+        <div class="flex items-center gap-3">
+          <img src="${i.image}" class="w-12 h-12 rounded-lg object-cover bg-white" alt="" onerror="this.onerror=null;this.src='assets/images/categories/${i.category || 'iluminacion'}.svg'">
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium line-clamp-1">${VV.escapeHTML(i.name)}</p>
+            <p class="text-xs text-slate-500">${i.qty} × ${VV.formatCLP(i.price)}</p>
+          </div>
+          <p class="text-sm font-bold">${VV.formatCLP(i.price * i.qty)}</p>
+        </div>
+      `).join('');
+      document.getElementById('sum-subtotal').textContent = VV.formatCLP(subtotal);
+      document.getElementById('sum-shipping').textContent = shipping === 0 ? 'Gratis' : VV.formatCLP(shipping);
+      document.getElementById('sum-total').textContent = VV.formatCLP(total);
+    }
+
+    function goToStep(n) {
+      state.step = n;
+      document.getElementById('step1-panel').classList.toggle('hidden', n !== 1);
+      document.getElementById('step2-panel').classList.toggle('hidden', n !== 2);
+      document.getElementById('step3-panel').classList.toggle('hidden', n !== 3);
+      const circles = [document.getElementById('step1-circle'), document.getElementById('step2-circle'), document.getElementById('step3-circle')];
+      circles.forEach((c, i) => {
+        if (i + 1 <= n) {
+          c.classList.remove('bg-slate-200', 'text-slate-500');
+          c.classList.add('bg-vv-700', 'text-white');
+        } else {
+          c.classList.add('bg-slate-200', 'text-slate-500');
+          c.classList.remove('bg-vv-700', 'text-white');
+        }
+      });
+      document.getElementById('bar-1').style.width = n >= 2 ? '100%' : '0%';
+      document.getElementById('bar-2').style.width = n >= 3 ? '100%' : '0%';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.getElementById('address-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      state.address = {
+        street: fd.get('street'),
+        apartment: fd.get('apartment') || '',
+        commune: fd.get('commune'),
+        region: fd.get('region'),
+        zipCode: fd.get('zipCode') || '',
+        notes: fd.get('notes') || ''
+      };
+      goToStep(2);
+    });
+
+    function renderShipping() {
+      const subtotal = Store.cart.subtotal();
+      document.getElementById('shipping-options').innerHTML = SHIPPING_OPTIONS.map((opt, idx) => {
+        const price = idx === 0 ? 0 : (idx === 1 && subtotal >= FREE_SHIPPING ? 0 : opt.price);
+        return `
+          <label class="flex items-start gap-3 p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-vv-500 has-[:checked]:border-vv-700 has-[:checked]:bg-vv-50 transition">
+            <input type="radio" name="shipping" value="${opt.id}" class="mt-1 accent-vv-700 shipping-radio">
+            <div class="flex-1">
+              <div class="flex justify-between">
+                <p class="font-semibold">${VV.escapeHTML(opt.name)}</p>
+                <p class="font-bold text-vv-700">${price === 0 ? 'Gratis' : VV.formatCLP(price)}</p>
+              </div>
+              <p class="text-sm text-slate-600 mt-0.5">${VV.escapeHTML(opt.description)}</p>
+              <p class="text-xs text-slate-500 mt-1">⏱️ ${opt.eta}</p>
+            </div>
+          </label>
+        `;
+      }).join('');
+      document.querySelectorAll('.shipping-radio').forEach(r => {
+        r.addEventListener('change', () => {
+          const id = r.value;
+          const idx = SHIPPING_OPTIONS.findIndex(o => o.id === id);
+          state.shipping = { ...SHIPPING_OPTIONS[idx], price: idx === 0 ? 0 : (idx === 1 && Store.cart.subtotal() >= FREE_SHIPPING ? 0 : SHIPPING_OPTIONS[idx].price) };
+          document.getElementById('to-step-3').disabled = false;
+          renderSummary();
+        });
+      });
+    }
+
+    function renderPayment() {
+      document.getElementById('payment-options').innerHTML = PAYMENT_OPTIONS.map(opt => `
+        <label class="flex items-start gap-3 p-4 border-2 border-slate-200 rounded-xl cursor-pointer hover:border-vv-500 has-[:checked]:border-vv-700 has-[:checked]:bg-vv-50 transition">
+          <input type="radio" name="payment" value="${opt.id}" class="mt-1 accent-vv-700 payment-radio">
+          <div class="text-2xl">${opt.icon}</div>
+          <div class="flex-1">
+            <p class="font-semibold">${VV.escapeHTML(opt.name)}</p>
+            <p class="text-sm text-slate-600 mt-0.5">${VV.escapeHTML(opt.description)}</p>
+          </div>
+        </label>
+      `).join('');
+      document.querySelectorAll('.payment-radio').forEach(r => {
+        r.addEventListener('change', () => {
+          const id = r.value;
+          const opt = PAYMENT_OPTIONS.find(o => o.id === id);
+          state.payment = opt;
+          document.getElementById('confirm-order').disabled = false;
+        });
+      });
+    }
+
+    document.getElementById('back-to-1').addEventListener('click', () => goToStep(1));
+    document.getElementById('back-to-2').addEventListener('click', () => goToStep(2));
+    document.getElementById('to-step-3').addEventListener('click', () => {
+      if (!state.shipping) { VV.toast('Selecciona un tipo de envío', 'warning'); return; }
+      goToStep(3);
+    });
+
+    document.getElementById('confirm-order').addEventListener('click', () => {
+      if (!state.payment) { VV.toast('Selecciona un medio de pago', 'warning'); return; }
+      const user = Store.auth.current();
+      const items = Store.cart.getAll();
+      const subtotal = Store.cart.subtotal();
+      const total = subtotal + state.shipping.price;
+
+      const order = Store.orders.create({
+        userId: user.id,
+        items,
+        subtotal,
+        shipping: state.shipping.price,
+        shippingName: state.shipping.name,
+        total,
+        paymentName: state.payment.name,
+        address: state.address
+      });
+      Store.cart.clear();
+      VV.toast('¡Compra confirmada!', 'success');
+      setTimeout(() => location.href = 'confirmacion.html?id=' + encodeURIComponent(order.id), 700);
+    });
+
+    renderShipping();
+    renderPayment();
+    renderSummary();
+  </script>
+</body>
+</html>

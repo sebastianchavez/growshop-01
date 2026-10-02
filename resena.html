@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dejar reseña · VerdeVital</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2315803d'/%3E%3Cpath d='M32 16c-4 6-8 10-8 18 0 4 4 8 8 8s8-4 8-8c0-8-4-12-8-18z' fill='white'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], serif: ['Playfair Display', 'Georgia', 'serif'] },
+          colors: { vv: { 50:'#f0fdf4',100:'#dcfce7',200:'#bbf7d0',300:'#86efac',400:'#4ade80',500:'#22c55e',600:'#16a34a',700:'#15803d',800:'#14532d',900:'#052e16',cream:'#f5f1e8',earth:'#e8e0cf' } }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="font-sans bg-white text-slate-800 antialiased">
+
+  <div id="navbar"></div>
+
+  <main class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <a href="javascript:history.back()" class="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-vv-700 mb-4">
+      <span class="material-symbols-outlined text-base">arrow_back</span> Volver
+    </a>
+    <div id="resena-root"></div>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script>
+    VV.mountNavbar('');
+    VV.mountFooter();
+
+    const productId = VV.getQueryParam('productId');
+    const product = productId ? VV.getProduct(productId) : null;
+
+    if (!product) {
+      document.getElementById('resena-root').innerHTML = `
+        <div class="text-center py-12">
+          <span class="material-symbols-outlined text-6xl text-slate-300">help</span>
+          <h2 class="mt-3 text-xl font-bold">Producto no encontrado</h2>
+        </div>
+      `;
+    } else {
+      const canReview = Store.reviews.canReview(productId);
+      if (!canReview.ok) {
+        document.getElementById('resena-root').innerHTML = `
+          <div class="bg-white border border-slate-200 rounded-2xl p-8 text-center">
+            <span class="material-symbols-outlined text-6xl text-amber-500">info</span>
+            <h2 class="mt-3 text-xl font-bold">No puedes dejar reseña aún</h2>
+            <p class="text-slate-600 mt-2 max-w-md mx-auto">${canReview.reason}</p>
+            <div class="flex gap-3 justify-center mt-6">
+              <a href="producto.html?id=${productId}" class="inline-flex bg-vv-700 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-vv-800">Ver producto</a>
+              <a href="perfil.html#pedidos" class="inline-flex bg-white border border-slate-300 px-5 py-2.5 rounded-xl font-semibold hover:bg-slate-50">Mis pedidos</a>
+            </div>
+          </div>
+        `;
+      } else {
+        document.getElementById('resena-root').innerHTML = `
+          <div class="flex items-center gap-4 bg-white border border-slate-200 rounded-2xl p-5 mb-6">
+            <img src="${product.images[0]}" alt="" class="w-20 h-20 rounded-xl object-cover bg-vv-cream">
+            <div>
+              <p class="text-xs text-slate-500 uppercase tracking-wider">${VV.escapeHTML((VV.getCategory(product.category)||{}).name || '')}</p>
+              <h1 class="font-serif text-xl font-bold">${VV.escapeHTML(product.name)}</h1>
+              <p class="text-vv-700 font-bold mt-1">${VV.formatCLP(product.price)}</p>
+            </div>
+          </div>
+
+          <div class="bg-white border border-slate-200 rounded-2xl p-6 lg:p-8">
+            <h2 class="text-2xl font-serif font-bold mb-1">Tu opinión nos importa</h2>
+            <p class="text-sm text-slate-600 mb-6">Cuéntale a la comunidad cómo te fue con este producto</p>
+
+            <form id="resena-form" class="space-y-5">
+              <div>
+                <label class="block text-sm font-semibold mb-3">Calificación *</label>
+                <div id="star-selector" class="flex gap-1">
+                  ${[1,2,3,4,5].map(n => `
+                    <button type="button" data-val="${n}" class="vv-star text-4xl text-slate-300 hover:text-amber-400 transition">★</button>
+                  `).join('')}
+                </div>
+                <input type="hidden" name="rating" required>
+                <p id="star-label" class="text-sm text-slate-500 mt-2">Selecciona una calificación</p>
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold mb-1.5">Tu reseña *</label>
+                <textarea name="comment" required minlength="20" rows="5" placeholder="¿Qué te pareció el producto? ¿Cumplió tus expectativas? ¿Lo recomendarías?" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:border-vv-700 focus:ring-2 focus:ring-vv-100"></textarea>
+                <p class="text-xs text-slate-500 mt-1">Mínimo 20 caracteres</p>
+              </div>
+
+              <div class="flex items-start gap-2">
+                <input type="checkbox" id="recomend" class="mt-1 accent-vv-700">
+                <label for="recomend" class="text-sm text-slate-700">Recomiendo este producto</label>
+              </div>
+
+              <div class="flex flex-col sm:flex-row gap-3 pt-3">
+                <a href="producto.html?id=${productId}" class="flex-1 inline-flex items-center justify-center gap-2 bg-white border border-slate-300 px-6 py-3 rounded-xl font-semibold hover:bg-slate-50">Cancelar</a>
+                <button type="submit" class="flex-1 inline-flex items-center justify-center gap-2 bg-vv-700 text-white px-6 py-3 rounded-xl font-semibold hover:bg-vv-800">
+                  <span class="material-symbols-outlined">send</span> Publicar reseña
+                </button>
+              </div>
+            </form>
+          </div>
+        `;
+
+        const stars = document.querySelectorAll('.vv-star');
+        const input = document.querySelector('input[name="rating"]');
+        const label = document.getElementById('star-label');
+        const labels = ['', 'Malo', 'Regular', 'Bueno', 'Muy bueno', 'Increíble'];
+
+        stars.forEach((s, i) => {
+          s.addEventListener('click', () => {
+            const val = i + 1;
+            input.value = val;
+            label.textContent = `${val}/5 — ${labels[val]}`;
+            stars.forEach((st, j) => {
+              st.classList.toggle('text-amber-400', j < val);
+              st.classList.toggle('text-slate-300', j >= val);
+            });
+          });
+          s.addEventListener('mouseenter', () => {
+            const val = i + 1;
+            stars.forEach((st, j) => {
+              st.classList.toggle('text-amber-400', j < val && j >= Number(input.value || 0));
+            });
+          });
+        });
+
+        document.getElementById('resena-form').addEventListener('submit', e => {
+          e.preventDefault();
+          if (!input.value) { VV.toast('Selecciona una calificación', 'warning'); return; }
+          const fd = new FormData(e.target);
+          const user = Store.auth.current();
+          Store.reviews.add({
+            productId,
+            rating: Number(fd.get('rating')),
+            comment: fd.get('comment'),
+            userName: user.name
+          });
+          VV.toast('¡Reseña publicada! Gracias por tu opinión', 'success');
+          setTimeout(() => location.href = 'producto.html?id=' + productId, 1200);
+        });
+      }
+    }
+  </script>
+</body>
+</html>

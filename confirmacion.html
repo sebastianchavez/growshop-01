@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Compra confirmada · VerdeVital</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2315803d'/%3E%3Cpath d='M32 16c-4 6-8 10-8 18 0 4 4 8 8 8s8-4 8-8c0-8-4-12-8-18z' fill='white'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], serif: ['Playfair Display', 'Georgia', 'serif'] },
+          colors: { vv: { 50:'#f0fdf4',100:'#dcfce7',200:'#bbf7d0',300:'#86efac',400:'#4ade80',500:'#22c55e',600:'#16a34a',700:'#15803d',800:'#14532d',900:'#052e16',cream:'#f5f1e8',earth:'#e8e0cf' } }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    @media print {
+      .no-print, #navbar, #footer, header, button { display: none !important; }
+      body { background: white; }
+      main { max-width: 100% !important; padding: 0 !important; }
+      .shadow-lg, .shadow-sm { box-shadow: none !important; }
+      .border { border-color: #ddd !important; }
+    }
+  </style>
+</head>
+<body class="font-sans bg-vv-cream/40 text-slate-800 antialiased">
+
+  <div id="navbar"></div>
+
+  <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div id="confirmation-root" class="bg-white border border-slate-200 rounded-2xl shadow-sm">
+      <div class="p-8 text-center border-b border-slate-100">
+        <div class="w-20 h-20 rounded-full bg-vv-100 text-vv-700 mx-auto flex items-center justify-center mb-4">
+          <span class="material-symbols-outlined text-5xl">check_circle</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-serif font-bold mb-2">¡Compra confirmada!</h1>
+        <p class="text-slate-600">Tu pedido fue recibido y está siendo preparado.</p>
+        <p class="text-sm text-slate-500 mt-2">Código de pedido: <span id="order-code" class="font-mono font-bold text-slate-900">—</span></p>
+      </div>
+      <div id="order-details" class="p-8"></div>
+      <div class="p-6 border-t border-slate-100 bg-vv-cream/50 no-print">
+        <p class="text-sm text-slate-600 mb-4 text-center">¿Qué quieres hacer a continuación?</p>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <button id="print-btn" class="flex-1 inline-flex items-center justify-center gap-2 bg-vv-700 text-white px-6 py-3.5 rounded-xl font-semibold hover:bg-vv-800">
+            <span class="material-symbols-outlined">print</span> Imprimir comprobante
+          </button>
+          <a href="perfil.html#pedidos" class="flex-1 inline-flex items-center justify-center gap-2 bg-white border-2 border-vv-700 text-vv-700 px-6 py-3.5 rounded-xl font-semibold hover:bg-vv-cream">
+            <span class="material-symbols-outlined">receipt_long</span> Ver historial de pedidos
+          </a>
+        </div>
+        <div class="flex justify-center mt-5">
+          <a href="index.html" class="text-sm text-slate-600 hover:text-vv-700 inline-flex items-center gap-1">
+            <span class="material-symbols-outlined text-base">arrow_back</span> Volver al inicio
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script>
+    VV.mountNavbar('');
+    VV.mountFooter();
+
+    const id = VV.getQueryParam('id');
+    const order = id ? Store.orders.byId(id) : Store.orders.byUser(Store.auth.current()?.id)[0];
+    if (!order) {
+      document.getElementById('confirmation-root').innerHTML = `
+        <div class="p-12 text-center">
+          <span class="material-symbols-outlined text-6xl text-slate-300">help</span>
+          <h2 class="mt-3 text-xl font-bold">No encontramos el comprobante</h2>
+          <a href="perfil.html" class="mt-5 inline-flex bg-vv-700 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-vv-800">Ver mis pedidos</a>
+        </div>
+      `;
+    } else {
+      document.getElementById('order-code').textContent = order.id;
+      const date = new Date(order.createdAt).toLocaleString('es-CL', { dateStyle: 'long', timeStyle: 'short' });
+      document.getElementById('order-details').innerHTML = `
+        <div class="grid sm:grid-cols-2 gap-4 mb-6 pb-6 border-b border-slate-200">
+          <div>
+            <p class="text-xs text-slate-500 uppercase tracking-wider">Cliente</p>
+            <p class="font-semibold mt-1">${VV.escapeHTML((Store.auth.current()||{}).name || 'Cliente')}</p>
+            <p class="text-sm text-slate-600">${VV.escapeHTML((Store.auth.current()||{}).email || '')}</p>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500 uppercase tracking-wider">Fecha</p>
+            <p class="font-semibold mt-1">${date}</p>
+            <p class="text-sm text-slate-600">Pago: ${VV.escapeHTML(order.paymentName)}</p>
+          </div>
+          <div class="sm:col-span-2">
+            <p class="text-xs text-slate-500 uppercase tracking-wider">Dirección de envío</p>
+            <p class="text-sm mt-1">${order.address.street}${order.address.apartment ? ', ' + order.address.apartment : ''}<br>${order.address.commune}, ${order.address.region}</p>
+          </div>
+          <div class="sm:col-span-2">
+            <p class="text-xs text-slate-500 uppercase tracking-wider">Tipo de envío</p>
+            <p class="font-semibold mt-1">${VV.escapeHTML(order.shippingName)}</p>
+          </div>
+        </div>
+        <h2 class="font-bold mb-3">Productos</h2>
+        <table class="w-full mb-5">
+          <tbody>
+            ${order.items.map(i => `
+              <tr class="border-b border-slate-100 last:border-0">
+                <td class="py-3"><img src="${i.image}" class="w-12 h-12 rounded object-cover bg-vv-cream" alt="" onerror="this.onerror=null;this.src='assets/images/categories/${i.category || 'iluminacion'}.svg'"></td>
+                <td class="py-3 px-3"><span class="text-sm">${VV.escapeHTML(i.name)}</span><br><span class="text-xs text-slate-500">${i.qty} × ${VV.formatCLP(i.price)}</span></td>
+                <td class="py-3 text-right font-semibold">${VV.formatCLP(i.price * i.qty)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+        <div class="bg-vv-cream rounded-xl p-4 space-y-2">
+          <div class="flex justify-between text-sm"><span>Subtotal</span><span>${VV.formatCLP(order.subtotal)}</span></div>
+          <div class="flex justify-between text-sm"><span>Envío</span><span>${order.shipping === 0 ? 'Gratis' : VV.formatCLP(order.shipping)}</span></div>
+          <div class="flex justify-between items-baseline pt-2 border-t border-vv-earth">
+            <span class="font-bold">Total pagado</span>
+            <span class="text-xl font-bold text-vv-800">${VV.formatCLP(order.total)}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    document.getElementById('print-btn').addEventListener('click', () => window.print());
+  </script>
+</body>
+</html>

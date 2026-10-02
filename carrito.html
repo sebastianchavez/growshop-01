@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carrito · VerdeVital</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2315803d'/%3E%3Cpath d='M32 16c-4 6-8 10-8 18 0 4 4 8 8 8s8-4 8-8c0-8-4-12-8-18z' fill='white'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], serif: ['Playfair Display', 'Georgia', 'serif'] },
+          colors: { vv: { 50:'#f0fdf4',100:'#dcfce7',200:'#bbf7d0',300:'#86efac',400:'#4ade80',500:'#22c55e',600:'#16a34a',700:'#15803d',800:'#14532d',900:'#052e16',cream:'#f5f1e8',earth:'#e8e0cf' } }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="font-sans bg-white text-slate-800 antialiased">
+
+  <div id="navbar"></div>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h1 class="text-3xl sm:text-4xl font-serif font-bold mb-1">Carrito de compras</h1>
+    <p class="text-slate-600 mb-8">Revisa los productos antes de proceder al pago</p>
+
+    <div id="cart-root"></div>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script>
+    VV.mountNavbar('');
+    VV.mountFooter();
+
+    const FREE_SHIPPING = 50000;
+
+    function renderCart() {
+      const items = Store.cart.getAll();
+      const root = document.getElementById('cart-root');
+      if (items.length === 0) {
+        root.innerHTML = `
+          <div class="text-center py-16 max-w-md mx-auto">
+            <span class="material-symbols-outlined text-7xl text-slate-300">shopping_cart</span>
+            <h2 class="mt-4 text-xl font-bold">Tu carrito está vacío</h2>
+            <p class="text-slate-500 mt-2 mb-6">Explora nuestro catálogo y agrega productos para comenzar.</p>
+            <a href="productos.html" class="inline-flex items-center gap-2 bg-vv-700 text-white px-6 py-3 rounded-xl font-semibold hover:bg-vv-800">
+              <span class="material-symbols-outlined">shopping_bag</span> Ir al catálogo
+            </a>
+          </div>
+        `;
+        return;
+      }
+      const subtotal = Store.cart.subtotal();
+      const shipping = subtotal >= FREE_SHIPPING ? 0 : 3990;
+      const total = subtotal + shipping;
+      root.innerHTML = `
+        <div class="grid lg:grid-cols-[1.5fr_1fr] gap-8">
+          <div class="space-y-4">
+            <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+              ${items.map(item => `
+                <div class="flex items-center gap-4 p-4 border-b border-slate-100 last:border-0">
+                  <a href="producto.html?id=${item.id}" class="shrink-0">
+                    <img src="${item.image}" alt="${VV.escapeHTML(item.name)}" class="w-24 h-24 rounded-lg object-cover bg-vv-cream" onerror="this.onerror=null;this.src='assets/images/categories/${item.category || 'iluminacion'}.svg'">
+                  </a>
+                  <div class="flex-1 min-w-0">
+                    <a href="producto.html?id=${item.id}" class="font-semibold text-slate-900 hover:text-vv-700 line-clamp-2">${VV.escapeHTML(item.name)}</a>
+                    <p class="text-vv-700 font-bold mt-1">${VV.formatCLP(item.price)}</p>
+                    <p class="text-xs text-slate-500 mt-0.5">${item.stock} disponibles</p>
+                  </div>
+                  <div class="flex flex-col items-end gap-2">
+                    <div class="inline-flex items-center border border-slate-300 rounded-lg">
+                      <button class="w-7 h-7 hover:bg-vv-cream" onclick="changeQty('${item.id}', ${item.qty - 1})">−</button>
+                      <input type="number" value="${item.qty}" min="1" max="${item.stock}" class="w-12 h-7 text-center border-x border-slate-300 text-sm font-semibold" onchange="changeQty('${item.id}', Number(this.value))">
+                      <button class="w-7 h-7 hover:bg-vv-cream" onclick="changeQty('${item.id}', ${item.qty + 1})">+</button>
+                    </div>
+                    <button onclick="removeItem('${item.id}')" class="text-xs text-red-600 hover:text-red-700 inline-flex items-center gap-1">
+                      <span class="material-symbols-outlined text-sm">delete</span> Eliminar
+                    </button>
+                    <p class="text-sm font-bold">${VV.formatCLP(item.price * item.qty)}</p>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+            <a href="productos.html" class="inline-flex items-center gap-2 text-vv-700 hover:text-vv-800 text-sm font-semibold">
+              <span class="material-symbols-outlined">arrow_back</span> Seguir comprando
+            </a>
+          </div>
+
+          <aside>
+            <div class="bg-vv-cream rounded-2xl p-6 sticky top-24">
+              <h2 class="font-serif text-xl font-bold mb-4">Resumen</h2>
+              <div class="space-y-2 pb-3 border-b border-vv-earth">
+                <div class="flex justify-between text-sm"><span>Subtotal</span><span class="font-semibold">${VV.formatCLP(subtotal)}</span></div>
+                <div class="flex justify-between text-sm">
+                  <span>Envío</span>
+                  <span class="font-semibold ${shipping === 0 ? 'text-vv-700' : ''}">${shipping === 0 ? 'Gratis' : VV.formatCLP(shipping)}</span>
+                </div>
+                ${subtotal < FREE_SHIPPING ? `<p class="text-xs text-slate-600 pt-1">¡Te faltan ${VV.formatCLP(FREE_SHIPPING - subtotal)} para envío gratis!</p>` : ''}
+              </div>
+              <div class="flex justify-between items-baseline py-3">
+                <span class="font-bold">Total</span>
+                <span class="text-2xl font-bold text-vv-800">${VV.formatCLP(total)}</span>
+              </div>
+              <a href="checkout.html" class="w-full inline-flex items-center justify-center gap-2 bg-vv-700 text-white py-3.5 rounded-xl font-semibold hover:bg-vv-800">
+                <span class="material-symbols-outlined">payment</span> Ir a pagar
+              </a>
+              <div class="mt-4 space-y-2 text-xs text-slate-600">
+                <p class="flex items-center gap-2"><span class="material-symbols-outlined text-vv-700 text-base">verified</span> Pago 100% seguro</p>
+                <p class="flex items-center gap-2"><span class="material-symbols-outlined text-vv-700 text-base">local_shipping</span> Despacho 24-48h</p>
+                <p class="flex items-center gap-2"><span class="material-symbols-outlined text-vv-700 text-base">workspace_premium</span> Garantía legal</p>
+              </div>
+            </div>
+          </aside>
+        </div>
+      `;
+    }
+
+    window.changeQty = function(id, qty) {
+      Store.cart.updateQty(id, qty);
+      renderCart();
+    };
+    window.removeItem = function(id) {
+      Store.cart.remove(id);
+      VV.toast('Producto eliminado del carrito', 'info');
+      renderCart();
+    };
+
+    renderCart();
+  </script>
+</body>
+</html>

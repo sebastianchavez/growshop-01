@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mi perfil · VerdeVital</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2315803d'/%3E%3Cpath d='M32 16c-4 6-8 10-8 18 0 4 4 8 8 8s8-4 8-8c0-8-4-12-8-18z' fill='white'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], serif: ['Playfair Display', 'Georgia', 'serif'] },
+          colors: { vv: { 50:'#f0fdf4',100:'#dcfce7',200:'#bbf7d0',300:'#86efac',400:'#4ade80',500:'#22c55e',600:'#16a34a',700:'#15803d',800:'#14532d',900:'#052e16',cream:'#f5f1e8',earth:'#e8e0cf' } }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="font-sans bg-white text-slate-800 antialiased">
+
+  <div id="navbar"></div>
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div id="profile-header" class="mb-8"></div>
+
+    <div class="border-b border-slate-200 mb-6">
+      <nav class="flex gap-1 -mb-px overflow-x-auto">
+        <button data-tab="pedidos" class="vv-tab px-4 py-3 text-sm font-semibold border-b-2 border-vv-700 text-vv-700 whitespace-nowrap">
+          <span class="material-symbols-outlined align-middle text-lg mr-1">receipt_long</span> Mis pedidos
+        </button>
+        <button data-tab="datos" class="vv-tab px-4 py-3 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap">
+          <span class="material-symbols-outlined align-middle text-lg mr-1">person</span> Mis datos
+        </button>
+        <button data-tab="direcciones" class="vv-tab px-4 py-3 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap">
+          <span class="material-symbols-outlined align-middle text-lg mr-1">home</span> Direcciones
+        </button>
+        <button data-tab="seguridad" class="vv-tab px-4 py-3 text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap">
+          <span class="material-symbols-outlined align-middle text-lg mr-1">lock</span> Seguridad
+        </button>
+      </nav>
+    </div>
+
+    <div id="tab-content"></div>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script>
+    VV.mountNavbar('');
+    VV.mountFooter();
+    if (!VV.requireAuth('login.html?return=perfil.html')) throw new Error('no auth');
+
+    const user = Store.auth.current();
+    if (location.hash === '#pedidos') setTimeout(() => activateTab('pedidos'), 50);
+
+    document.querySelectorAll('.vv-tab').forEach(btn => {
+      btn.addEventListener('click', () => activateTab(btn.dataset.tab));
+    });
+
+    function activateTab(name) {
+      document.querySelectorAll('.vv-tab').forEach(b => {
+        if (b.dataset.tab === name) {
+          b.classList.add('border-vv-700', 'text-vv-700');
+          b.classList.remove('border-transparent', 'text-slate-500');
+        } else {
+          b.classList.remove('border-vv-700', 'text-vv-700');
+          b.classList.add('border-transparent', 'text-slate-500');
+        }
+      });
+      if (name === 'pedidos') renderPedidos();
+      if (name === 'datos') renderDatos();
+      if (name === 'direcciones') renderDirecciones();
+      if (name === 'seguridad') renderSeguridad();
+    }
+
+    document.getElementById('profile-header').innerHTML = `
+      <h1 class="text-3xl font-serif font-bold">Hola, ${VV.escapeHTML(user.name.split(' ')[0])}</h1>
+      <p class="text-slate-600">${VV.escapeHTML(user.email)} · Miembro desde ${new Date(user.createdAt).toLocaleDateString('es-CL', { year: 'numeric', month: 'long' })}</p>
+    `;
+
+    function renderPedidos() {
+      const orders = Store.orders.byUser(user.id);
+      const c = document.getElementById('tab-content');
+      if (orders.length === 0) {
+        c.innerHTML = `
+          <div class="text-center py-16 bg-vv-cream/40 rounded-2xl">
+            <span class="material-symbols-outlined text-6xl text-slate-300">receipt_long</span>
+            <h2 class="mt-3 text-xl font-bold">Aún no tienes pedidos</h2>
+            <p class="text-slate-500 mt-1 mb-5">Explora nuestro catálogo y realiza tu primera compra.</p>
+            <a href="productos.html" class="inline-flex items-center gap-2 bg-vv-700 text-white px-6 py-3 rounded-xl font-semibold hover:bg-vv-800">Ver productos</a>
+          </div>
+        `;
+        return;
+      }
+      c.innerHTML = orders.map(o => {
+        const statusColors = {
+          recibido: 'bg-blue-100 text-blue-700',
+          preparando: 'bg-amber-100 text-amber-700',
+          enviado: 'bg-purple-100 text-purple-700',
+          entregado: 'bg-vv-100 text-vv-800',
+          cancelado: 'bg-red-100 text-red-700'
+        };
+        return `
+          <div class="bg-white border border-slate-200 rounded-2xl p-5 mb-4">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <div>
+                <p class="text-xs text-slate-500">Pedido</p>
+                <p class="font-mono font-bold text-slate-900">${o.id}</p>
+              </div>
+              <span class="px-3 py-1 rounded-full text-xs font-semibold ${statusColors[o.status] || ''}">${Store.orders.statusLabel(o.status)}</span>
+              <div class="text-right ml-auto">
+                <p class="text-xs text-slate-500">Total</p>
+                <p class="font-bold text-vv-800">${VV.formatCLP(o.total)}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 mb-3 overflow-x-auto">
+              ${o.items.slice(0, 4).map(i => `<img src="${i.image}" class="w-12 h-12 rounded object-cover bg-vv-cream shrink-0" alt="" onerror="this.onerror=null;this.src='assets/images/categories/${i.category || 'iluminacion'}.svg'">`).join('')}
+              ${o.items.length > 4 ? `<span class="text-xs text-slate-500">+${o.items.length - 4}</span>` : ''}
+            </div>
+            <div class="flex justify-between items-center pt-3 border-t border-slate-100">
+              <p class="text-sm text-slate-600">${new Date(o.createdAt).toLocaleDateString('es-CL', { dateStyle: 'long' })}</p>
+              <a href="pedido-detalle.html?id=${o.id}" class="inline-flex items-center gap-1 text-sm font-semibold text-vv-700 hover:text-vv-800">
+                Ver detalle <span class="material-symbols-outlined text-base">arrow_forward</span>
+              </a>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderDatos() {
+      const c = document.getElementById('tab-content');
+      c.innerHTML = `
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 max-w-2xl">
+          <h2 class="text-xl font-bold mb-1">Datos personales</h2>
+          <p class="text-sm text-slate-600 mb-5">Actualiza tu información de contacto</p>
+          <form id="datos-form" class="space-y-4">
+            <div><label class="block text-sm font-medium mb-1.5">Nombre completo</label><input name="name" value="${VV.escapeHTML(user.name)}" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:border-vv-700 focus:ring-2 focus:ring-vv-100"></div>
+            <div><label class="block text-sm font-medium mb-1.5">Email</label><input type="email" value="${VV.escapeHTML(user.email)}" disabled class="w-full px-4 py-2.5 border border-slate-300 rounded-lg bg-slate-50 text-slate-500"></div>
+            <div><label class="block text-sm font-medium mb-1.5">Teléfono</label><input name="phone" value="${VV.escapeHTML(user.phone || '')}" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:border-vv-700 focus:ring-2 focus:ring-vv-100"></div>
+            <div class="flex justify-end"><button class="bg-vv-700 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-vv-800">Guardar cambios</button></div>
+          </form>
+        </div>
+      `;
+      document.getElementById('datos-form').addEventListener('submit', e => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        Store.auth.updateProfile({ name: fd.get('name'), phone: fd.get('phone') });
+        VV.toast('Datos actualizados', 'success');
+        setTimeout(() => location.reload(), 700);
+      });
+    }
+
+    function renderDirecciones() {
+      const c = document.getElementById('tab-content');
+      const addr = user.address;
+      c.innerHTML = `
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 max-w-2xl">
+          <h2 class="text-xl font-bold mb-1">Dirección principal</h2>
+          <p class="text-sm text-slate-600 mb-5">Se usará por defecto en tus pedidos</p>
+          ${addr ? `
+            <div class="bg-vv-cream rounded-xl p-4 mb-4">
+              <p class="font-semibold">${addr.street}${addr.apartment ? ', ' + addr.apartment : ''}</p>
+              <p class="text-sm text-slate-700">${addr.commune}, ${addr.region}</p>
+              ${addr.zipCode ? `<p class="text-sm text-slate-700">CP: ${addr.zipCode}</p>` : ''}
+            </div>
+          ` : '<p class="text-slate-500 mb-4">Aún no tienes una dirección registrada.</p>'}
+          <form id="addr-form" class="space-y-4">
+            <div><label class="block text-sm font-medium mb-1.5">Calle y número</label><input name="street" value="${addr?.street || ''}" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:border-vv-700 focus:ring-2 focus:ring-vv-100"></div>
+            <div><label class="block text-sm font-medium mb-1.5">Depto / Casa</label><input name="apartment" value="${addr?.apartment || ''}" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:border-vv-700 focus:ring-2 focus:ring-vv-100"></div>
+            <div class="grid grid-cols-2 gap-3">
+              <div><label class="block text-sm font-medium mb-1.5">Comuna</label><input name="commune" value="${addr?.commune || ''}" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:border-vv-700 focus:ring-2 focus:ring-vv-100"></div>
+              <div><label class="block text-sm font-medium mb-1.5">Región</label><input name="region" value="${addr?.region || ''}" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:border-vv-700 focus:ring-2 focus:ring-vv-100"></div>
+            </div>
+            <div class="flex justify-end"><button class="bg-vv-700 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-vv-800">Guardar dirección</button></div>
+          </form>
+        </div>
+      `;
+      document.getElementById('addr-form').addEventListener('submit', e => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        Store.auth.updateProfile({
+          address: {
+            street: fd.get('street'),
+            apartment: fd.get('apartment'),
+            commune: fd.get('commune'),
+            region: fd.get('region'),
+            zipCode: fd.get('zipCode') || ''
+          }
+        });
+        VV.toast('Dirección guardada', 'success');
+        setTimeout(() => location.reload(), 700);
+      });
+    }
+
+    function renderSeguridad() {
+      const c = document.getElementById('tab-content');
+      c.innerHTML = `
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 max-w-2xl">
+          <h2 class="text-xl font-bold mb-1">Cambiar contraseña</h2>
+          <p class="text-sm text-slate-600 mb-5">Usa una contraseña de al menos 8 caracteres con números y mayúsculas.</p>
+          <form id="pass-form" class="space-y-4">
+            <div><label class="block text-sm font-medium mb-1.5">Contraseña actual</label><input name="current" type="password" required class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:border-vv-700 focus:ring-2 focus:ring-vv-100"></div>
+            <div><label class="block text-sm font-medium mb-1.5">Nueva contraseña</label><input name="next" type="password" required minlength="6" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:border-vv-700 focus:ring-2 focus:ring-vv-100"></div>
+            <div><label class="block text-sm font-medium mb-1.5">Confirmar nueva contraseña</label><input name="confirm" type="password" required minlength="6" class="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:border-vv-700 focus:ring-2 focus:ring-vv-100"></div>
+            <div class="flex justify-end"><button class="bg-vv-700 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-vv-800">Actualizar contraseña</button></div>
+          </form>
+        </div>
+      `;
+      document.getElementById('pass-form').addEventListener('submit', e => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        if (fd.get('next') !== fd.get('confirm')) { VV.toast('Las contraseñas no coinciden', 'error'); return; }
+        const r = Store.auth.changePassword(fd.get('current'), fd.get('next'));
+        if (!r.ok) VV.toast(r.error, 'error');
+        else { VV.toast('Contraseña actualizada', 'success'); e.target.reset(); }
+      });
+    }
+
+    activateTab('pedidos');
+  </script>
+</body>
+</html>
