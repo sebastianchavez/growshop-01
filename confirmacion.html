@@ -29,6 +29,7 @@
       .border { border-color: #ddd !important; }
     }
   </style>
+<meta name="currency" content="CLP">
 </head>
 <body class="font-sans bg-vv-cream/40 text-slate-800 antialiased">
 
@@ -130,7 +131,7 @@
       `;
     }
 
-    document.getElementById('print-btn').addEventListener('click', () => window.print());
+    document.getElementById('print-btn')?.addEventListener('click', () => window.print());
   </script>
 </body>
 </html>
